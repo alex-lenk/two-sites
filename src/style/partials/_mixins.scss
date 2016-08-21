@@ -1,0 +1,104 @@
+@function calculateRem($size) {
+  $remSize: $size / 16px;
+  @return $remSize * 1rem;
+}
+
+//@include font-size(14px);
+@mixin font-size($size) {
+  font-size: calculateRem($size);
+}
+
+//@include transition(color .3s ease);
+@mixin transition($args) {
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -ms-transition: $args;
+  -o-transition: $args;
+  transition: $args;
+}
+
+//@include size(100px);
+//@include size(100px, 50px);
+@mixin size($width, $height: $width) {
+  width: $width;
+  height: $height;
+}
+
+//@include fader(hide);
+//@include fader(show);
+@mixin fader($status) {
+  @if $status == 'hide' {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.3s, opacity 0.3s;
+  } @else if $status == 'show' {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0.3s, opacity 0.3s;
+  }
+}
+
+//@include link(white, blue, green, red);
+@mixin linx($link, $visit, $hover, $active) {
+  a {
+    color: $link;
+    &:visited {
+      color: $visit;
+    }
+    &:hover {
+      color: $hover;
+    }
+    &:active {
+      color: $active;
+    }
+  }
+}
+
+//Альтернатива display none
+//@include hide-display;
+@mixin hide-display() {
+  position: absolute;
+  overflow: hidden;
+  height: 1px;
+  width: 1px;
+  opacity: 0;
+}
+
+//Очиститель потоков
+@mixin cf {
+  &:after {
+    display: table;
+    clear: both;
+    content: "";
+  }
+}
+
+
+/// Media Query generation
+///
+/// @param {string} $point
+///
+/// @example scss
+///   @include breakpoint(xs) {
+///     .element {
+///       display: none;
+///     }
+///   }
+///
+/// @example css
+///   @media screen and (max-width: 600px) {
+///     .element {
+///       display: none;
+///     }
+///   }
+///
+/// @require {variable} $breakpoints
+@mixin breakpoint($point) {
+  @each $name, $query in $breakpoints {
+    @if ($name == $point) {
+      @media #{$query} {
+        @content;
+      }
+    }
+  }
+}
